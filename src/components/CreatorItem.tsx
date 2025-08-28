@@ -61,10 +61,50 @@ export function CreatorItem({ creator }: CreatorItemProps) {
     return 'bg-purple-100 text-purple-800';
   };
 
+  const formatCountryName = (countryCode: string | null): string => {
+    if (!countryCode || countryCode === '') return 'N/A';
+    
+    // Country code mapping
+    const countryMap: Record<string, string> = {
+      'AT': 'Austria',
+      'AU': 'Australia', 
+      'CA': 'Canada',
+      'CZ': 'Czech Republic',
+      'DE': 'Germany',
+      'ES': 'Spain',
+      'EU': 'Europe',
+      'FR': 'France',
+      'ID': 'Indonesia',
+      'IQ': 'Iraq',
+      'IT': 'Italy',
+      'NL': 'Netherlands',
+      'PL': 'Poland',
+      'PT': 'Portugal',
+      'RU': 'Russia',
+      'SG': 'Singapore',
+      'TR': 'Turkey',
+      'UK': 'United Kingdom',
+      'US': 'United States'
+    };
+    
+    return countryMap[countryCode] || countryCode;
+  };
+
+  const formatUpdatedDate = (dateString: string | null): string => {
+    if (!dateString) return 'No update date';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
+    } catch {
+      return 'Invalid date';
+    }
+  };
+
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="p-4">
-        <div className="grid grid-cols-6 gap-4 items-center">
+        <div className="grid grid-cols-7 gap-4 items-center">
           {/* Creator Name */}
           <div className="col-span-2">
             <div className="font-medium text-sm truncate" title={creator.Name || 'Unknown'}>
@@ -93,8 +133,8 @@ export function CreatorItem({ creator }: CreatorItemProps) {
 
           {/* Location */}
           <div>
-            <div className="text-sm text-muted-foreground truncate" title={creator.Location || 'N/A'}>
-              {creator.Location || 'N/A'}
+            <div className="text-sm text-muted-foreground truncate" title={formatCountryName(creator.Location)}>
+              {formatCountryName(creator.Location)}
             </div>
           </div>
 
@@ -105,20 +145,36 @@ export function CreatorItem({ creator }: CreatorItemProps) {
             </div>
           </div>
 
-          {/* Engagement Rate - moved to a new row for better mobile layout */}
+          {/* Data Source & Updated Date */}
+          <div className="flex flex-col space-y-1">
+            {creator['File URL'] && (
+              <a 
+                href={creator['File URL']} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-xs text-blue-600 hover:text-blue-800 truncate"
+                title="Open data source file"
+              >
+                Data Source
+              </a>
+            )}
+            <div className="text-xs text-muted-foreground" title={formatUpdatedDate(creator['Updated Date'])}>
+              {formatUpdatedDate(creator['Updated Date'])}
+            </div>
+          </div>
         </div>
         
         {/* Second row for additional info */}
-        <div className="grid grid-cols-6 gap-4 items-center mt-2 pt-2 border-t border-gray-100">
+        <div className="grid grid-cols-7 gap-4 items-center mt-2 pt-2 border-t border-gray-100">
           <div className="col-span-2 text-xs text-muted-foreground">
             {creator.Email && (
-              <a href={`mailto:${creator.Email}`} className="hover:text-blue-600">
+              <a href={`mailto:${creator.Email}`} className="hover:text-blue-600 truncate">
                 {creator.Email}
               </a>
             )}
           </div>
           
-          <div className="col-span-2">
+          <div>
             <Badge 
               variant="secondary" 
               className={`text-xs ${getEngagementColor(creator['Engagement Rate'])}`}
@@ -139,6 +195,9 @@ export function CreatorItem({ creator }: CreatorItemProps) {
               </a>
             )}
           </div>
+
+          <div></div> {/* Empty space for alignment */}
+          <div></div> {/* Empty space for alignment */}
         </div>
       </CardContent>
     </Card>

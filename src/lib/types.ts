@@ -47,32 +47,45 @@ export const ENGAGEMENT_RANGES = [
 // Platform options (matching your data)
 export const PLATFORMS = ['Tiktok', 'Instagram', 'Youtube'] as const;
 
-// Vertical categories (matching your data - mixed case formats)
-export const VERTICALS = [
-  'GAMER',
-  'Gamer', 
-  'Gaming',
-  'TECH',
-  'Tech',
-  'Technology',
-  'LIFESTYLE',
-  'Lifestyle',
-  'FASHION',
-  'Fashion',
-  'BEAUTY',
-  'Beauty',
-  'TRAVEL',
-  'Travel',
-  'MUSIC',
-  'Music',
-  'FOOD',
-  'Food',
-  'Foodie',
-  'FITNESS',
-  'Fitness',
-  'ALL',
-  'All',
-] as const;
+// Country code mapping for locations
+export const COUNTRY_CODES = {
+  'AT': 'Austria',
+  'AU': 'Australia', 
+  'CA': 'Canada',
+  'CZ': 'Czech Republic',
+  'DE': 'Germany',
+  'ES': 'Spain',
+  'EU': 'Europe',
+  'FR': 'France',
+  'ID': 'Indonesia',
+  'IQ': 'Iraq',
+  'IT': 'Italy',
+  'NL': 'Netherlands',
+  'PL': 'Poland',
+  'PT': 'Portugal',
+  'RU': 'Russia',
+  'SG': 'Singapore',
+  'TR': 'Turkey',
+  'UK': 'United Kingdom',
+  'US': 'United States'
+} as const;
+
+// Grouped vertical categories (combining similar ones)
+export const VERTICAL_GROUPS = [
+  { label: 'Gaming', values: ['GAMER', 'Gaming'] as string[] },
+  { label: 'Technology', values: ['TECH', 'Tech'] as string[] },
+  { label: 'Fashion & Beauty', values: ['Fashion', 'Beauty', 'Fashion & Beauty'] as string[] },
+  { label: 'Lifestyle', values: ['Lifestyle', 'Lifestyle/Foodie'] as string[] },
+  { label: 'Food', values: ['Foodie'] as string[] },
+  { label: 'Family & Parenting', values: ['Family', 'Family Creator', 'Parent'] as string[] },
+  { label: 'Home & Interior', values: ['Home and Renovation', 'Home/Interior', 'Home/Interiors'] as string[] },
+  { label: 'Fitness & Sport', values: ['Fitness', 'Fitness / Sport', 'Basketball'] as string[] },
+  { label: 'Travel', values: ['Travel'] as string[] },
+  { label: 'Music', values: ['Music'] as string[] },
+  { label: 'Photography', values: ['Photography'] as string[] },
+  { label: 'Diversity', values: ['Diversity'] as string[] },
+  { label: 'All Categories', values: ['All'] as string[] }
+];
 
 // Search response interface
 export interface SearchResponse {
