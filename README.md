@@ -126,21 +126,16 @@ creator-search/
 
 ## Deployment
 
+### Quick Start
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+
 ### Vercel (Recommended)
 
-1. **Connect to Vercel**
-   - Push your code to GitHub
-   - Connect repository to Vercel
-   - Vercel will auto-detect Next.js
-
-2. **Set Environment Variables**
-   In Vercel dashboard, add:
+1. **Push to GitHub** and connect to Vercel
+2. **Add Environment Variables**:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-
-3. **Deploy**
-   - Automatic deployments on main branch pushes
-   - Preview deployments for pull requests
+3. **Deploy** - Automatic deployments on main branch
 
 ### Manual Deployment
 
@@ -148,6 +143,8 @@ creator-search/
 npm run build
 npm run start
 ```
+
+**🚀 Live Demo**: [Add your deployment URL here]
 
 ## Development
 
