@@ -5,11 +5,21 @@ import { FilterState, SearchResponse, FOLLOWER_RANGES, ENGAGEMENT_RANGES } from 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
+// Check for valid environment variables
+const hasValidCredentials = supabaseUrl && 
+  supabaseAnonKey && 
+  supabaseUrl !== 'your_supabase_project_url_here' &&
+  supabaseAnonKey !== 'your_supabase_anon_key_here';
+
+if (!hasValidCredentials) {
+  console.warn('Supabase credentials not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Create client with fallback values for build purposes
+export const supabase = createClient(
+  hasValidCredentials ? supabaseUrl! : 'https://placeholder.supabase.co',
+  hasValidCredentials ? supabaseAnonKey! : 'placeholder-key'
+);
 
 // Search creators with filters and pagination
 export async function searchCreators(
@@ -17,6 +27,15 @@ export async function searchCreators(
   page: number = 1,
   limit: number = 50
 ): Promise<SearchResponse> {
+  // Return empty results if credentials aren't configured
+  if (!hasValidCredentials) {
+    return {
+      data: [],
+      count: 0,
+      totalCount: 0,
+    };
+  }
+
   try {
     let query = supabase.from('creators').select('*', { count: 'exact' });
 
@@ -110,6 +129,10 @@ export async function searchCreators(
 
 // Get unique locations for filter dropdown
 export async function getUniqueLocations(): Promise<string[]> {
+  if (!hasValidCredentials) {
+    return [];
+  }
+
   try {
     const { data, error } = await supabase
       .from('creators')
@@ -136,6 +159,10 @@ export async function getUniqueLocations(): Promise<string[]> {
 
 // Get unique verticals for filter dropdown
 export async function getUniqueVerticals(): Promise<string[]> {
+  if (!hasValidCredentials) {
+    return [];
+  }
+
   try {
     const { data, error } = await supabase
       .from('creators')
@@ -162,6 +189,10 @@ export async function getUniqueVerticals(): Promise<string[]> {
 
 // Test database connection
 export async function testConnection(): Promise<boolean> {
+  if (!hasValidCredentials) {
+    return false;
+  }
+
   try {
     const { error } = await supabase
       .from('creators')
