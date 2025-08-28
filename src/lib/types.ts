@@ -1,13 +1,16 @@
-// Creator interface matching Supabase database schema
+// Creator interface matching actual Supabase database schema
 export interface Creator {
-  id: number;
+  UID: string;
   Name: string | null;
-  Platform: 'Instagram' | 'TikTok' | 'YouTube' | null;
+  Profile: string | null;
+  Email: string | null;
+  Platform: 'Tiktok' | 'Instagram' | 'Youtube' | null;
   Followers: number | null;
   Location: string | null;
   Vertical: string | null;
+  'File URL': string | null;
+  'Updated Date': string | null;
   'Engagement Rate': number | null;
-  created_at: string;
 }
 
 // Filter state interface for managing search filters
@@ -41,26 +44,34 @@ export const ENGAGEMENT_RANGES = [
   { label: 'Outlier/Review (>20%)', value: 'outlier', min: 20, max: Infinity },
 ] as const;
 
-// Platform options
-export const PLATFORMS = ['Instagram', 'TikTok', 'YouTube'] as const;
+// Platform options (matching your data)
+export const PLATFORMS = ['Tiktok', 'Instagram', 'Youtube'] as const;
 
-// Vertical categories
+// Vertical categories (matching your data - mixed case formats)
 export const VERTICALS = [
-  'Foodie',
-  'Lifestyle',
-  'Family / Family Creator / Parent',
+  'GAMER',
+  'Gamer', 
+  'Gaming',
+  'TECH',
   'Tech',
-  'Gaming / Gamer',
-  'Fitness / Sport',
+  'Technology',
+  'LIFESTYLE',
+  'Lifestyle',
+  'FASHION',
   'Fashion',
-  'Beauty / Fashion & Beauty',
+  'BEAUTY',
+  'Beauty',
+  'TRAVEL',
   'Travel',
+  'MUSIC',
   'Music',
-  'Home & Renovation / Home/Interior / Home/Interiors',
-  'Photography',
+  'FOOD',
+  'Food',
+  'Foodie',
+  'FITNESS',
+  'Fitness',
+  'ALL',
   'All',
-  'Diversity',
-  'Basketball',
 ] as const;
 
 // Search response interface

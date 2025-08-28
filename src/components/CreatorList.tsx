@@ -67,7 +67,7 @@ export function CreatorList({ creators, isLoading, isEmpty }: CreatorListProps) 
       {/* Creator Items */}
       <div className="space-y-2">
         {creators.map((creator) => (
-          <CreatorItem key={creator.id} creator={creator} />
+          <CreatorItem key={creator.UID} creator={creator} />
         ))}
       </div>
 

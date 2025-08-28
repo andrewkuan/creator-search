@@ -29,9 +29,9 @@ export function CreatorItem({ creator }: CreatorItemProps) {
     switch (platform) {
       case 'Instagram':
         return 'bg-gradient-to-r from-purple-500 to-pink-500';
-      case 'TikTok':
+      case 'Tiktok':
         return 'bg-black';
-      case 'YouTube':
+      case 'Youtube':
         return 'bg-red-600';
       default:
         return 'bg-gray-500';
@@ -111,7 +111,11 @@ export function CreatorItem({ creator }: CreatorItemProps) {
         {/* Second row for additional info */}
         <div className="grid grid-cols-6 gap-4 items-center mt-2 pt-2 border-t border-gray-100">
           <div className="col-span-2 text-xs text-muted-foreground">
-            ID: {creator.id}
+            {creator.Email && (
+              <a href={`mailto:${creator.Email}`} className="hover:text-blue-600">
+                {creator.Email}
+              </a>
+            )}
           </div>
           
           <div className="col-span-2">
@@ -124,7 +128,16 @@ export function CreatorItem({ creator }: CreatorItemProps) {
           </div>
           
           <div className="col-span-2 text-xs text-muted-foreground">
-            {creator.created_at ? new Date(creator.created_at).toLocaleDateString() : 'N/A'}
+            {creator.Profile && (
+              <a 
+                href={creator.Profile} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-blue-600 truncate block"
+              >
+                View Profile
+              </a>
+            )}
           </div>
         </div>
       </CardContent>

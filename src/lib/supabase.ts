@@ -59,7 +59,7 @@ export async function searchCreators(
       query = query.in('Vertical', filters.verticals);
     }
 
-    // Apply follower range filter
+    // Apply follower range filter (skip if followers are null)
     if (filters.followerRanges.length > 0) {
       const followerConditions: string[] = [];
       
@@ -67,9 +67,9 @@ export async function searchCreators(
         const range = FOLLOWER_RANGES.find(r => r.value === rangeValue);
         if (range) {
           if (range.max === Infinity) {
-            followerConditions.push(`Followers.gte.${range.min}`);
+            followerConditions.push(`and(Followers.not.is.null,Followers.gte.${range.min})`);
           } else {
-            followerConditions.push(`and(Followers.gte.${range.min},Followers.lte.${range.max})`);
+            followerConditions.push(`and(Followers.not.is.null,Followers.gte.${range.min},Followers.lte.${range.max})`);
           }
         }
       });
@@ -80,7 +80,7 @@ export async function searchCreators(
       }
     }
 
-    // Apply engagement rate filter
+    // Apply engagement rate filter (skip if engagement rate is null)
     if (filters.engagementRanges.length > 0) {
       const engagementConditions: string[] = [];
       
@@ -88,9 +88,9 @@ export async function searchCreators(
         const range = ENGAGEMENT_RANGES.find(r => r.value === rangeValue);
         if (range) {
           if (range.max === Infinity) {
-            engagementConditions.push(`"Engagement Rate".gte.${range.min}`);
+            engagementConditions.push(`and("Engagement Rate".not.is.null,"Engagement Rate".gte.${range.min})`);
           } else {
-            engagementConditions.push(`and("Engagement Rate".gte.${range.min},"Engagement Rate".lte.${range.max})`);
+            engagementConditions.push(`and("Engagement Rate".not.is.null,"Engagement Rate".gte.${range.min},"Engagement Rate".lte.${range.max})`);
           }
         }
       });
@@ -106,8 +106,8 @@ export async function searchCreators(
     const to = from + limit - 1;
     query = query.range(from, to);
 
-    // Order by created_at for consistent results
-    query = query.order('created_at', { ascending: false });
+    // Order by Name for consistent results (most tables should have this)
+    query = query.order('Name', { ascending: true });
 
     const { data, error, count } = await query;
 
