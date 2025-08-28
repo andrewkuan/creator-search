@@ -85,6 +85,7 @@ export default function HomePage() {
   // Initial search on mount (load all creators)
   useEffect(() => {
     performSearch(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array for initial load only
 
   const isEmpty = hasSearched && creators.length === 0 && !isLoading;

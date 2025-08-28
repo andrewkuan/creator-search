@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { Creator, FilterState, SearchResponse, FOLLOWER_RANGES, ENGAGEMENT_RANGES } from './types';
+import { FilterState, SearchResponse, FOLLOWER_RANGES, ENGAGEMENT_RANGES } from './types';
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -163,7 +163,7 @@ export async function getUniqueVerticals(): Promise<string[]> {
 // Test database connection
 export async function testConnection(): Promise<boolean> {
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('creators')
       .select('count')
       .limit(1);
