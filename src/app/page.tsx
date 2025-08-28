@@ -7,6 +7,7 @@ import { SearchPagination } from '@/components/SearchPagination';
 import { Creator, FilterState, PaginationState } from '@/lib/types';
 import { searchCreators } from '@/lib/supabase';
 import { Separator } from '@/components/ui/separator';
+import { DebugInfo } from '@/components/DebugInfo';
 
 const initialFilters: FilterState = {
   name: '',
@@ -167,6 +168,9 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+
+      {/* Debug component to check env vars on Vercel */}
+      <DebugInfo />
     </div>
   );
 }
