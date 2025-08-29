@@ -22,7 +22,7 @@ export function CreatorItem({ creator }: CreatorItemProps) {
 
   const formatEngagementRate = (rate: number | null): string => {
     if (!rate) return 'N/A';
-    return `${rate.toFixed(2)}%`;
+    return `${(rate * 100).toFixed(1)}%`;
   };
 
   const getPlatformColor = (platform: string | null): string => {
@@ -53,11 +53,14 @@ export function CreatorItem({ creator }: CreatorItemProps) {
   const getEngagementColor = (rate: number | null): string => {
     if (!rate) return 'bg-gray-100 text-gray-800';
     
-    if (rate < 1) return 'bg-red-100 text-red-800';
-    if (rate < 2) return 'bg-orange-100 text-orange-800';
-    if (rate < 5) return 'bg-yellow-100 text-yellow-800';
-    if (rate < 10) return 'bg-green-100 text-green-800';
-    if (rate < 20) return 'bg-blue-100 text-blue-800';
+    // Convert decimal to percentage for color logic
+    const percentage = rate * 100;
+    
+    if (percentage < 1) return 'bg-red-100 text-red-800';
+    if (percentage < 2) return 'bg-orange-100 text-orange-800';
+    if (percentage < 5) return 'bg-yellow-100 text-yellow-800';
+    if (percentage < 10) return 'bg-green-100 text-green-800';
+    if (percentage < 20) return 'bg-blue-100 text-blue-800';
     return 'bg-purple-100 text-purple-800';
   };
 

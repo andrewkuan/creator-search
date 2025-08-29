@@ -34,14 +34,14 @@ export const FOLLOWER_RANGES = [
   { label: 'Megastar (2M+)', value: 'megastar', min: 2000000, max: Infinity },
 ] as const;
 
-// Engagement rate ranges
+// Engagement rate ranges (values in decimal format to match database)
 export const ENGAGEMENT_RANGES = [
-  { label: 'Very Low (<1%)', value: 'very-low', min: 0, max: 0.99 },
-  { label: 'Low (1–2%)', value: 'low', min: 1, max: 1.99 },
-  { label: 'Standard (2–5%)', value: 'standard', min: 2, max: 4.99 },
-  { label: 'Strong (5–10%)', value: 'strong', min: 5, max: 9.99 },
-  { label: 'Exceptional (10–20%)', value: 'exceptional', min: 10, max: 19.99 },
-  { label: 'Outlier/Review (>20%)', value: 'outlier', min: 20, max: Infinity },
+  { label: 'Very Low (<1%)', value: 'very-low', min: 0, max: 0.0099 },
+  { label: 'Low (1–2%)', value: 'low', min: 0.01, max: 0.0199 },
+  { label: 'Standard (2–5%)', value: 'standard', min: 0.02, max: 0.0499 },
+  { label: 'Strong (5–10%)', value: 'strong', min: 0.05, max: 0.0999 },
+  { label: 'Exceptional (10–20%)', value: 'exceptional', min: 0.10, max: 0.1999 },
+  { label: 'Outlier/Review (>20%)', value: 'outlier', min: 0.20, max: Infinity },
 ] as const;
 
 // Platform options (matching your data)
