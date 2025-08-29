@@ -37,7 +37,7 @@ export async function searchCreators(
   }
 
   try {
-    let query = supabase.from('Creator List').select('*', { count: 'exact' });
+    let query = supabase.from('creator_list').select('*', { count: 'exact' });
 
     // Apply name filter
     if (filters.name.trim()) {
@@ -135,7 +135,7 @@ export async function getUniqueLocations(): Promise<string[]> {
 
   try {
     const { data, error } = await supabase
-      .from('Creator List')
+      .from('creator_list')
       .select('Location')
       .not('Location', 'is', null)
       .order('Location');
@@ -195,7 +195,7 @@ export async function testConnection(): Promise<boolean> {
 
   try {
     const { error } = await supabase
-      .from('Creator List')
+      .from('creator_list')
       .select('count')
       .limit(1);
 
