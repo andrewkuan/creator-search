@@ -22,7 +22,6 @@ export function AISearch({ onFiltersChange, onSearch }: AISearchProps) {
   // Effect to trigger search after filters are applied
   useEffect(() => {
     if (triggerSearch) {
-      console.log('🔍 AISearch: useEffect triggered, calling onSearch()');
       onSearch();
       setTriggerSearch(false);
     }
@@ -60,10 +59,8 @@ export function AISearch({ onFiltersChange, onSearch }: AISearchProps) {
         engagementRanges: []
       };
       
-      console.log('🔍 AISearch: Applying filters and triggering search', { ...resetFilters, ...filters });
       onFiltersChange({ ...resetFilters, ...filters });
       
-      console.log('🔍 AISearch: Setting triggerSearch to true (will trigger useEffect)');
       // Trigger search after state update
       setTriggerSearch(true);
       
@@ -78,9 +75,7 @@ export function AISearch({ onFiltersChange, onSearch }: AISearchProps) {
         verticals: [],
         engagementRanges: []
       };
-      console.log('🔍 AISearch: Fallback - resetting filters and triggering search', resetFilters);
       onFiltersChange(resetFilters);
-      console.log('🔍 AISearch: Setting triggerSearch to true (fallback, will trigger useEffect)');
       setTriggerSearch(true);
     } finally {
       setIsProcessing(false);
