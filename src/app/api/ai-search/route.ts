@@ -52,7 +52,7 @@ Examples:
 "Tech influencers from Europe" → {"verticals": ["TECH", "Tech"], "locations": ["EU", "DE", "FR", "IT", "ES", "NL"]}`;
 
     const completion = await openai.chat.completions.create({
-      model: "openai/gpt-4o-mini", // OpenRouter format for GPT-4o-mini
+      model: "openai/gpt-5-nano", // OpenRouter format for GPT-5-nano
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: query }
