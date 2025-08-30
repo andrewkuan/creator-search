@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-// Initialize OpenAI only when needed
-function getOpenAIClient() {
-  if (!process.env.OPENAI_API_KEY) {
+// Initialize OpenRouter client
+function getOpenRouterClient() {
+  if (!process.env.OPENROUTER_API_KEY) {
     return null;
   }
   return new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: "https://openrouter.ai/api/v1",
+    apiKey: process.env.OPENROUTER_API_KEY,
   });
 }
 
@@ -22,10 +23,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Try to get OpenAI client
-    const openai = getOpenAIClient();
+    // Try to get OpenRouter client
+    const openai = getOpenRouterClient();
     
-    // If no OpenAI API key, fall back to simple keyword matching
+    // If no OpenRouter API key, fall back to simple keyword matching
     if (!openai) {
       const fallbackFilters = createFallbackFilters(query);
       return NextResponse.json({ filters: fallbackFilters });
@@ -51,7 +52,7 @@ Examples:
 "Tech influencers from Europe" → {"verticals": ["TECH", "Tech"], "locations": ["EU", "DE", "FR", "IT", "ES", "NL"]}`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "openai/gpt-4o-mini", // OpenRouter format for GPT-4o-mini
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: query }
@@ -63,7 +64,7 @@ Examples:
     const response = completion.choices[0]?.message?.content;
     
     if (!response) {
-      throw new Error('No response from OpenAI');
+      throw new Error('No response from OpenRouter');
     }
 
     // Parse the JSON response
@@ -71,7 +72,7 @@ Examples:
     try {
       filters = JSON.parse(response);
     } catch {
-      console.error('Failed to parse OpenAI response:', response);
+      console.error('Failed to parse OpenRouter response:', response);
       // Fallback to simple keyword matching
       filters = createFallbackFilters(query);
     }
