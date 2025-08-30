@@ -94,12 +94,20 @@ Examples:
     const chatgptQuery = JSON.stringify(filters, null, 2);
     const supabaseQuery = filtersToQueryDescription(filters);
     
+    console.log('🔍 Attempting to save query record:', {
+      user_query: query,
+      chatgpt_query: chatgptQuery,
+      supabase_query: supabaseQuery
+    });
+    
     saveQueryRecord({
       user_query: query,
       chatgpt_query: chatgptQuery,
       supabase_query: supabaseQuery
+    }).then(result => {
+      console.log('✅ Query record save result:', result);
     }).catch(error => {
-      console.error('Failed to save query record:', error);
+      console.error('❌ Failed to save query record:', error);
       // Don't fail the request if logging fails
     });
 

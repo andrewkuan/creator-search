@@ -36,11 +36,13 @@ export default function HomePage() {
 
   // Search function
   const performSearch = useCallback(async (page: number = 1) => {
+    console.log('🔍 HomePage: performSearch called with page:', page, 'filters:', filters);
     setIsLoading(true);
     setError(null);
     
     try {
       const response = await searchCreators(filters, page, pagination.itemsPerPage);
+      console.log('🔍 HomePage: searchCreators response:', response);
       
       setCreators(response.data);
       setPagination({
@@ -62,6 +64,7 @@ export default function HomePage() {
 
   // Handle search button click
   const handleSearch = () => {
+    console.log('🔍 HomePage: handleSearch called, about to call performSearch(1)');
     performSearch(1);
   };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +17,16 @@ export function AISearch({ onFiltersChange, onSearch }: AISearchProps) {
   const [query, setQuery] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [lastQuery, setLastQuery] = useState('');
+  const [triggerSearch, setTriggerSearch] = useState(false);
+
+  // Effect to trigger search after filters are applied
+  useEffect(() => {
+    if (triggerSearch) {
+      console.log('🔍 AISearch: useEffect triggered, calling onSearch()');
+      onSearch();
+      setTriggerSearch(false);
+    }
+  }, [triggerSearch, onSearch]);
 
   const processAIQuery = async () => {
     if (!query.trim()) return;
@@ -50,10 +60,12 @@ export function AISearch({ onFiltersChange, onSearch }: AISearchProps) {
         engagementRanges: []
       };
       
+      console.log('🔍 AISearch: Applying filters and triggering search', { ...resetFilters, ...filters });
       onFiltersChange({ ...resetFilters, ...filters });
       
-      // Trigger search
-      onSearch();
+      console.log('🔍 AISearch: Setting triggerSearch to true (will trigger useEffect)');
+      // Trigger search after state update
+      setTriggerSearch(true);
       
     } catch (error) {
       console.error('AI search error:', error);
@@ -66,8 +78,10 @@ export function AISearch({ onFiltersChange, onSearch }: AISearchProps) {
         verticals: [],
         engagementRanges: []
       };
+      console.log('🔍 AISearch: Fallback - resetting filters and triggering search', resetFilters);
       onFiltersChange(resetFilters);
-      onSearch();
+      console.log('🔍 AISearch: Setting triggerSearch to true (fallback, will trigger useEffect)');
+      setTriggerSearch(true);
     } finally {
       setIsProcessing(false);
     }
