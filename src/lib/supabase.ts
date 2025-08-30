@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { FilterState, SearchResponse, FOLLOWER_RANGES, ENGAGEMENT_RANGES } from './types';
+import { FilterState, SearchResponse, QueryRecord, FOLLOWER_RANGES, ENGAGEMENT_RANGES } from './types';
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -203,5 +203,32 @@ export async function testConnection(): Promise<boolean> {
   } catch (error) {
     console.error('Database connection test failed:', error);
     return false;
+  }
+}
+
+// Save query record to database
+export async function saveQueryRecord(queryRecord: Omit<QueryRecord, 'id' | 'created_at'>) {
+  try {
+    if (!hasValidCredentials) {
+      console.warn('Supabase credentials not configured. Skipping query record save.');
+      return { success: false, error: 'Supabase credentials not configured' };
+    }
+
+    const { data, error } = await supabase
+      .from('query_record')
+      .insert([queryRecord])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error saving query record:', error);
+      return { success: false, error: error.message };
+    }
+
+    console.log('Query record saved successfully:', data);
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error saving query record:', error);
+    return { success: false, error: String(error) };
   }
 }

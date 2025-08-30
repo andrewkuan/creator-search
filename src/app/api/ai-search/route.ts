@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { saveQueryRecord } from '@/lib/supabase';
 
 // Initialize OpenRouter client
 function getOpenRouterClient() {
@@ -29,13 +30,25 @@ export async function POST(request: NextRequest) {
     // If no OpenRouter API key, fall back to simple keyword matching
     if (!openai) {
       const fallbackFilters = createFallbackFilters(query);
+      
+      // Save query record for no-API-key case (fire and forget)
+      const chatgptQuery = JSON.stringify(fallbackFilters, null, 2);
+      const supabaseQuery = filtersToQueryDescription(fallbackFilters);
+      
+      saveQueryRecord({
+        user_query: query,
+        chatgpt_query: `NO_API_KEY: ${chatgptQuery}`,
+        supabase_query: supabaseQuery
+      }).catch(error => {
+        console.error('Failed to save no-API-key query record:', error);
+      });
+      
       return NextResponse.json({ filters: fallbackFilters });
     }
 
     const systemPrompt = `You are a search query translator for a creator database. Convert natural language queries into structured filters.
 
 Available filter options:
-- name: string (creator name search)
 - platforms: array of ["Tiktok", "Instagram", "Youtube"]
 - locations: array of country codes ["TR", "US", "DE", "UK", "CA", "AU", "FR", "IT", "ES", "NL", "PL", "PT", "RU", "SG", "CZ", "AT", "EU", "ID", "IQ"]
 - verticals: array from ["GAMER", "Gaming", "TECH", "Tech", "Fashion", "Beauty", "Fashion & Beauty", "Lifestyle", "Lifestyle/Foodie", "Foodie", "Family", "Family Creator", "Parent", "Home and Renovation", "Home/Interior", "Home/Interiors", "Fitness", "Fitness / Sport", "Basketball", "Travel", "Music", "Photography", "Diversity", "All"]
@@ -77,6 +90,19 @@ Examples:
       filters = createFallbackFilters(query);
     }
 
+    // Save query record to database (fire and forget)
+    const chatgptQuery = JSON.stringify(filters, null, 2);
+    const supabaseQuery = filtersToQueryDescription(filters);
+    
+    saveQueryRecord({
+      user_query: query,
+      chatgpt_query: chatgptQuery,
+      supabase_query: supabaseQuery
+    }).catch(error => {
+      console.error('Failed to save query record:', error);
+      // Don't fail the request if logging fails
+    });
+
     return NextResponse.json({ filters });
 
   } catch (error) {
@@ -85,6 +111,18 @@ Examples:
     // Fallback to simple keyword matching
     const { query } = await request.json();
     const fallbackFilters = createFallbackFilters(query);
+    
+    // Save query record for fallback case (fire and forget)
+    const chatgptQuery = JSON.stringify(fallbackFilters, null, 2);
+    const supabaseQuery = filtersToQueryDescription(fallbackFilters);
+    
+    saveQueryRecord({
+      user_query: query,
+      chatgpt_query: `FALLBACK: ${chatgptQuery}`,
+      supabase_query: supabaseQuery
+    }).catch(logError => {
+      console.error('Failed to save fallback query record:', logError);
+    });
     
     return NextResponse.json({ filters: fallbackFilters });
   }
@@ -151,4 +189,62 @@ function createFallbackFilters(query: string): Record<string, unknown> {
   }
 
   return filters;
+}
+
+// Convert filter object to human-readable Supabase query description
+function filtersToQueryDescription(filters: Record<string, unknown>): string {
+  const conditions: string[] = [];
+
+  if (filters.name && typeof filters.name === 'string') {
+    conditions.push(`Name ILIKE '%${filters.name}%'`);
+  }
+
+  if (filters.platforms && Array.isArray(filters.platforms)) {
+    conditions.push(`Platform IN (${filters.platforms.map(p => `'${p}'`).join(', ')})`);
+  }
+
+  if (filters.locations && Array.isArray(filters.locations)) {
+    conditions.push(`Location IN (${filters.locations.map(l => `'${l}'`).join(', ')})`);
+  }
+
+  if (filters.verticals && Array.isArray(filters.verticals)) {
+    conditions.push(`Vertical IN (${filters.verticals.map(v => `'${v}'`).join(', ')})`);
+  }
+
+  if (filters.followerRanges && Array.isArray(filters.followerRanges)) {
+    const ranges = filters.followerRanges.map(range => {
+      switch (range) {
+        case 'mini-micro': return 'Followers BETWEEN 0 AND 49999';
+        case 'micro': return 'Followers BETWEEN 50000 AND 99999';
+        case 'mid': return 'Followers BETWEEN 100000 AND 249999';
+        case 'mid-macro': return 'Followers BETWEEN 250000 AND 499999';
+        case 'macro': return 'Followers BETWEEN 500000 AND 999999';
+        case 'hero': return 'Followers BETWEEN 1000000 AND 1999999';
+        case 'megastar': return 'Followers >= 2000000';
+        default: return `Followers: ${range}`;
+      }
+    });
+    conditions.push(`(${ranges.join(' OR ')})`);
+  }
+
+  if (filters.engagementRanges && Array.isArray(filters.engagementRanges)) {
+    const ranges = filters.engagementRanges.map(range => {
+      switch (range) {
+        case 'very-low': return 'Engagement Rate < 0.01';
+        case 'low': return 'Engagement Rate BETWEEN 0.01 AND 0.0199';
+        case 'standard': return 'Engagement Rate BETWEEN 0.02 AND 0.0499';
+        case 'strong': return 'Engagement Rate BETWEEN 0.05 AND 0.0999';
+        case 'exceptional': return 'Engagement Rate BETWEEN 0.10 AND 0.1999';
+        case 'outlier': return 'Engagement Rate >= 0.20';
+        default: return `Engagement Rate: ${range}`;
+      }
+    });
+    conditions.push(`(${ranges.join(' OR ')})`);
+  }
+
+  if (conditions.length === 0) {
+    return 'SELECT * FROM creator_list ORDER BY Name ASC';
+  }
+
+  return `SELECT * FROM creator_list WHERE ${conditions.join(' AND ')} ORDER BY Name ASC`;
 }

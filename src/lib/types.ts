@@ -13,6 +13,15 @@ export interface Creator {
   'Engagement Rate': number | null;
 }
 
+// Query record interface for tracking user queries
+export interface QueryRecord {
+  id?: number;
+  user_query: string;
+  chatgpt_query: string;
+  supabase_query: string;
+  created_at?: string;
+}
+
 // Filter state interface for managing search filters
 export interface FilterState {
   name: string;
