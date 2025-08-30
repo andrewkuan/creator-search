@@ -13,7 +13,7 @@ interface AISearchProps {
   currentFilters: FilterState;
 }
 
-export function AISearch({ onFiltersChange, onSearch, currentFilters }: AISearchProps) {
+export function AISearch({ onFiltersChange, onSearch }: AISearchProps) {
   const [query, setQuery] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [lastQuery, setLastQuery] = useState('');
@@ -40,16 +40,33 @@ export function AISearch({ onFiltersChange, onSearch, currentFilters }: AISearch
 
       const { filters } = await response.json();
       
-      // Apply the AI-generated filters
-      onFiltersChange({ ...currentFilters, ...filters });
+      // Reset all filters and apply only the AI-generated ones
+      const resetFilters = {
+        name: '',
+        platforms: [],
+        followerRanges: [],
+        locations: [],
+        verticals: [],
+        engagementRanges: []
+      };
+      
+      onFiltersChange({ ...resetFilters, ...filters });
       
       // Trigger search
       onSearch();
       
     } catch (error) {
       console.error('AI search error:', error);
-      // Fallback: just do a name search
-      onFiltersChange({ ...currentFilters, name: query });
+      // Fallback: reset filters and show all results (no name search)
+      const resetFilters = {
+        name: '',
+        platforms: [],
+        followerRanges: [],
+        locations: [],
+        verticals: [],
+        engagementRanges: []
+      };
+      onFiltersChange(resetFilters);
       onSearch();
     } finally {
       setIsProcessing(false);

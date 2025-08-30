@@ -183,8 +183,8 @@ function createFallbackFilters(query: string): Record<string, unknown> {
     filters.engagementRanges = ['very-low', 'low'];
   }
 
-  // If it looks like a name search, add it
-  if (Object.keys(filters).length === 0 || lowerQuery.includes('named') || lowerQuery.includes('called')) {
+  // Only add name search if explicitly mentioned
+  if (lowerQuery.includes('named') || lowerQuery.includes('called') || lowerQuery.startsWith('find ')) {
     filters.name = query;
   }
 
