@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { FilterPanel } from '@/components/FilterPanel';
 import { CreatorList } from '@/components/CreatorList';
 import { SearchPagination } from '@/components/SearchPagination';
+import { AISearch } from '@/components/AISearch';
 import { Creator, FilterState, PaginationState } from '@/lib/types';
 import { searchCreators } from '@/lib/supabase';
 import { Separator } from '@/components/ui/separator';
@@ -108,6 +109,13 @@ export default function HomePage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
+        {/* AI Search Bar */}
+        <AISearch
+          onFiltersChange={handleFiltersChange}
+          onSearch={handleSearch}
+          currentFilters={filters}
+        />
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Filters Sidebar */}
           <div className="lg:col-span-1">

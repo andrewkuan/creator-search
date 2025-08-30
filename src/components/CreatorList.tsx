@@ -52,12 +52,13 @@ export function CreatorList({ creators, isLoading, isEmpty }: CreatorListProps) 
       {/* List Header */}
       <Card>
         <CardContent className="py-3">
-          <div className="grid grid-cols-6 gap-4 text-sm font-medium text-muted-foreground">
+          <div className="grid grid-cols-7 gap-4 text-sm font-medium text-muted-foreground">
             <div className="col-span-2">Creator Name</div>
             <div>Platform</div>
             <div>Followers</div>
             <div>Location</div>
             <div>Vertical</div>
+            <div>Data Source & Last Updated</div>
           </div>
         </CardContent>
       </Card>
